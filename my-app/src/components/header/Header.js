@@ -27,14 +27,14 @@ const Header = ({ handleToggleSidebar }) => {
             </button>
          </form>
 
-         <dic className="header__icons">
+         <div className="header__icons">
             <MdNotifications size={28} />
             <MdApps size={28} />
             <img
                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQeitT1f5FcSxOWPcPs0DSY1yHIn7CyA6kGg&usqp=CAU"
                alt="avatar"
             />
-         </dic>
+         </div>
       </div>
    )
 }
