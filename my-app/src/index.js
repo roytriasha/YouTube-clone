@@ -9,7 +9,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import firebase from 'firebase/app'; // Import only the base Firebase module
 import 'firebase/auth';
-import { createRoot } from 'react-dom'; // Update import statement
+import { createRoot } from 'react-dom/client'; // Update import statement
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const firebaseConfig = {
@@ -25,16 +25,12 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-const rootElement = document.getElementById('root');
-
-createRoot(rootElement).render(
+createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
         <App />
       </Router>
     </Provider>
-  </React.StrictMode>,
-  rootElement
+  </React.StrictMode>
 );
-

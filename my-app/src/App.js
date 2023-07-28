@@ -1,27 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Add useState import
 import { Container } from 'react-bootstrap';
-import { Route, Routes, Navigate } from 'react-router-dom';
-import { useNavigate } from 'react-router'; // Import useNavigate from react-router
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import Header from './components/header/Header';
 import Sidebar from './components/sidebar/Sidebar';
 import HomeScreen from './screens/homeScreen/HomeScreen';
 import LoginScreen from './screens/loginScreen/LoginScreen';
-import WatchScreen from './screens/watchScreen/WatchScreen'; // Import WatchScreen
+import WatchScreen from './screens/watchScreen/WatchScreen';
+import SearchScreen from './screens/SearchScreen';
+import SubscriptionsScreen from './screens/subscriptionsScreen/SubscriptionsScreen';
+import ChannelScreen from './screens/channelScreen/ChannelScreen';
+
 import './_app.scss';
-import { useSelector } from 'react-redux';
-import { getAuth } from 'firebase/auth'
 
 const Layout = ({ children }) => {
-  const [sidebar, toggleSidebar] = useState(false);
+  const [sidebar, toggleSidebar] = useState(false); // Add useState here
 
   const handleToggleSidebar = () => toggleSidebar((value) => !value);
 
   return (
     <>
       <Header handleToggleSidebar={handleToggleSidebar} />
-      <div className="app__container">
-        <Sidebar sidebar={sidebar} handleToggleSidebar={handleToggleSidebar} />
-        <Container fluid className="app__main">
+      <div className='app__container'>
+        <Sidebar
+          sidebar={sidebar}
+          handleToggleSidebar={handleToggleSidebar}
+        />
+        <Container fluid className='app__main '>
           {children}
         </Container>
       </div>
@@ -30,8 +36,8 @@ const Layout = ({ children }) => {
 };
 
 const App = () => {
-  const { accessToken, loading } = useSelector(state => state.auth);
-
+  const { loading } = useSelector((state) => state.auth);
+  const accessToken = localStorage.getItem('ytc-access-token');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,24 +47,32 @@ const App = () => {
   }, [accessToken, loading, navigate]);
 
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<HomeScreen />} />
-        <Route path="/auth" element={<LoginScreen />} />
-        <Route
-          path="/search"
-          element={
-            <Layout>
-              <h1>Search Results</h1>
-            </Layout>
-          }
-        />
-        <Route path="/watch/:id" element={<WatchScreen />} /> 
-        <Route path="/*" element={<Navigate to="/" />} />
-      </Routes>
-    </Layout>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomeScreen />} />
+      </Route>
+
+      <Route path="/auth" element={<LoginScreen />} />
+
+      <Route path="/search/:query" element={<Layout />}>
+        <Route index element={<SearchScreen />} />
+      </Route>
+
+      <Route path="/watch/:id" element={<Layout />}>
+        <Route index element={<WatchScreen />} />
+      </Route>
+
+      <Route path="/feed/subscriptions" element={<Layout />}>
+        <Route index element={<SubscriptionsScreen />} />
+      </Route>
+
+      <Route path="/channel/:channelId" element={<Layout />}>
+        <Route index element={<ChannelScreen />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 };
 
 export default App;
-
